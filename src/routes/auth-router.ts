@@ -18,15 +18,18 @@ authRouter.post('/login', async (request, response) => {
         }
 
         if (!(await bcrypt.compare(password, user.password as string))) {
-            return response.status(403).json({
+            return response.status(401).json({
                 error: 'Invalid password',
             });
         }
 
         user.password = undefined;
 
+        const token = userService.generateAwsToken({ id: user.id });
+
         response.json({
             user,
+            token,
         });
     } catch (error) {
         return response.status(500).json({
@@ -39,16 +42,19 @@ authRouter.post('/register', async (request, response) => {
     const { name, email, password } = request.body;
 
     try {
-        const createdUser = await userService.registerUser({
+        const user = await userService.registerUser({
             name,
             email,
             password,
         });
 
-        createdUser.password = undefined;
+        user.password = undefined;
+
+        const token = userService.generateAwsToken({ id: user.id });
 
         return response.json({
-            createdUser,
+            user,
+            token,
         });
     } catch (error) {
         return response.status(500).json({

@@ -1,4 +1,6 @@
 import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
+import environment from '../config/environment';
 import { IUser } from '../interfaces';
 import { userModel } from '../models';
 
@@ -40,5 +42,11 @@ export class UserService {
             .select('+password');
 
         return user;
+    }
+
+    public generateAwsToken(params: any): string {
+        return jwt.sign(params, environment.jwtSecret, {
+            expiresIn: 86400,
+        });
     }
 }
