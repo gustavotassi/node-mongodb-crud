@@ -7,9 +7,12 @@ import { authRouter, petRouter } from './routes';
 const app = express();
 const { port } = environment;
 
+// Middlewares
 app.use(cors());
 app.use(json());
 app.use(cookieParser());
+
+// Routes
 app.use(authRouter);
 app.use(petRouter);
 
