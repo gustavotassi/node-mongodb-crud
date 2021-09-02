@@ -1,7 +1,9 @@
 import express from 'express';
+import { authMiddleware } from '../middlewares';
 import { PetService } from '../services';
 
 export const petRouter = express.Router();
+petRouter.use(authMiddleware);
 const petService = new PetService();
 
 petRouter.get('/pets/:id', async (request, response) => {
